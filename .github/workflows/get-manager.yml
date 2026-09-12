@@ -287,8 +287,11 @@ jobs:
 
           if [ "${{ inputs.kernelsu_variant }}" == "ReSukiSU" ]; then
             echo "仅保留 ReSukiSU arm64-v8a release 管理器..."
-            find manager-artifacts -type f -name "*.apk" ! -name "*-arm64-v8a-release.apk" -delete
+            find manager-artifacts -type f -name "*.apk" ! -name "*arm64-v8a*.apk" -delete
             find manager-artifacts -type f -name "*debug*.apk" -delete
+            find manager-artifacts/Spoofed-Manager-release -type f -name "*.apk" 2>/dev/null | while read -r f; do
+              mv "$f" "$(dirname "$f")/spoofed-$(basename "$f")"
+            done
             if ! find manager-artifacts -type f -name "*-arm64-v8a-release.apk" | grep -q .; then
               echo "未找到 ReSukiSU arm64-v8a release 管理器。"
               exit 1
